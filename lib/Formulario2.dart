@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 void main() => runApp(
-  MaterialApp(debugShowCheckedModeBanner: false, home: FormularioPage()),
+  MaterialApp(debugShowCheckedModeBanner: false, home: FormularioPage2()),
 );
 
-class FormularioPage extends StatefulWidget {
+class FormularioPage2 extends StatefulWidget {
   @override
   _FormularioPageState createState() => _FormularioPageState();
 }
 
-class _FormularioPageState extends State<FormularioPage> {
+class _FormularioPageState extends State<FormularioPage2> {
   final _formKey = GlobalKey<FormState>();
   String? _respostaFrutas;
   String? _respostaCafe;

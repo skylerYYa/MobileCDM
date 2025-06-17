@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Formulario2.dart'; // Importando a próxima tela
 
 void main() => runApp(
   MaterialApp(debugShowCheckedModeBanner: false, home: FormularioPage()),
@@ -99,9 +100,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                       fontSize: 16,
                                     ),
                                   ),
-                                  ...['Matutino', 'Vespertino', 'Noturno'].map((
-                                    turno,
-                                  ) {
+                                  ...['Matutino', 'Vespertino', 'Noturno'].map((turno) {
                                     return RadioListTile<String>(
                                       title: Text(turno),
                                       value: turno,
@@ -121,12 +120,7 @@ class _FormularioPageState extends State<FormularioPage> {
                                       fontSize: 16,
                                     ),
                                   ),
-                                  ...[
-                                    'Sempre',
-                                    'Nunca',
-                                    'Eventualmente',
-                                    'Raramente',
-                                  ].map((opcao) {
+                                  ...['Sempre', 'Nunca', 'Eventualmente', 'Raramente'].map((opcao) {
                                     return RadioListTile<String>(
                                       title: Text(opcao),
                                       value: opcao,
@@ -225,11 +219,11 @@ class _FormularioPageState extends State<FormularioPage> {
                                     return;
                                   }
 
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Formulário validado com sucesso!',
-                                      ),
+                                  // Tudo validado -> Navegar para a próxima tela
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>FormularioPage2(),
                                     ),
                                   );
                                 }

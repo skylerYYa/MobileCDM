@@ -25,7 +25,7 @@ class _FormularioPageState extends State<FormularioPage> {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF732457), Color(0xFF8C336D)],
+                colors: [Color.fromARGB(255, 109, 34, 83), Color(0xFF8C336D)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Formulario.dart'; // Certifique-se de que o arquivo e a classe existem
 
 void main() => runApp(MyApp());
 
@@ -8,12 +9,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Editar',
       debugShowCheckedModeBanner: false,
-      home: FebFormScreen(),
+      home: EditarPage(),
     );
   }
 }
 
-class FebFormScreen extends StatelessWidget {
+class EditarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +33,7 @@ class FebFormScreen extends StatelessWidget {
           // Imagem de fundo com opacidade
           Positioned.fill(
             child: Opacity(
-              opacity: 1, // Ajuste a intensidade da imagem
+              opacity: 1,
               child: Image.asset('assents/images/CDM.png', fit: BoxFit.cover),
             ),
           ),
@@ -116,7 +117,12 @@ class FebFormScreen extends StatelessWidget {
                             Spacer(),
                             ElevatedButton(
                               onPressed: () {
-                                // Ação do botão "Editar"
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FormularioPage(),
+                                  ),
+                                );
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Color(0xFF6FAC45),

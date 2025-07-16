@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
+import 'Editar.dart'; // importe o arquivo da outra tela
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ObrigadoScreen(),
-      debugShowCheckedModeBanner: false,
-    );
+    return MaterialApp(home: ObrigadoPage(), debugShowCheckedModeBanner: false);
   }
 }
 
-class ObrigadoScreen extends StatelessWidget {
+class ObrigadoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,9 +21,9 @@ class ObrigadoScreen extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.topLeft, // canto superior esquerdo
-                  end: Alignment.bottomRight, // canto inferior direito
-                  colors: [Color(0xFF47283C), Color(0xFF47283C)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color.fromARGB(255, 87, 50, 74), Color(0xFF47283C)],
                 ),
               ),
             ),
@@ -52,7 +50,7 @@ class ObrigadoScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'Obrigado!',
+                  'Obrigado por responder!',
                   style: TextStyle(
                     fontSize: 30,
                     color: Colors.white,
@@ -68,7 +66,10 @@ class ObrigadoScreen extends StatelessWidget {
             right: 20,
             child: GestureDetector(
               onTap: () {
-                // Ação ao clicar
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditarPage()),
+                );
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 26, vertical: 14),
@@ -90,16 +91,12 @@ class ObrigadoScreen extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.arrow_forward,
-                      color: Color.fromARGB(255, 255, 255, 255),
-                      size: 20,
-                    ),
+                    Icon(Icons.arrow_forward, color: Colors.white, size: 20),
                     SizedBox(width: 8),
                     Text(
                       'Próximo',
                       style: TextStyle(
-                        color: Color.fromARGB(255, 255, 255, 255),
+                        color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),

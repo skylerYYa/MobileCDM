@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'main.dart'; // Certifique-se de que o caminho está correto para InicialPage
 
 void main() {
   runApp(MyApp());
@@ -8,20 +9,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // Remove o banner de debug
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: GradientBackgroundScreen(),
+      home: EntradaPage(),
     );
   }
 }
 
-class GradientBackgroundScreen extends StatelessWidget {
+class EntradaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Fundo com gradiente
+          // Fundo gradiente
           Container(
             width: double.infinity,
             height: double.infinity,
@@ -33,17 +34,16 @@ class GradientBackgroundScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Imagem de fundo semi-transparente
+          // Imagem de fundo
           Positioned.fill(
             child: Opacity(
-              opacity: 1, // Ajuste de transparência da imagem
+              opacity: 1,
               child: Image.asset('assents/images/CDM.png', fit: BoxFit.cover),
             ),
           ),
-          // Coluna com conteúdo sobreposto
+          // Conteúdo da tela
           Column(
             children: [
-              // Aba superior com imagem centralizada
               Container(
                 width: double.infinity,
                 height: 90,
@@ -57,28 +57,26 @@ class GradientBackgroundScreen extends StatelessWidget {
                 child: Center(
                   child: Image.asset(
                     'assents/images/FiebCDM2.png',
-                    width: 900, // Ajuste do tamanho da imagem
+                    width: 900,
                     height: 100,
                     fit: BoxFit.contain,
                   ),
                 ),
               ),
               Spacer(flex: 3),
-              // Imagem no meio da tela
               Center(
                 child: Image.asset(
                   'assents/images/Garfo.png',
-                  width: 300, // Ajuste do tamanho da imagem
+                  width: 300,
                   height: 200,
                   fit: BoxFit.contain,
                 ),
               ),
               Spacer(flex: 2),
-              // Botão com degradê
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [const Color(0xFFA3BF3B), const Color(0xFF6FAC45)],
+                    colors: [Color(0xFFA3BF3B), Color(0xFF6FAC45)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -86,13 +84,11 @@ class GradientBackgroundScreen extends StatelessWidget {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    print('Botão Entrar pressionado!');
+                    Navigator.of(context).push(_createBounceRoute());
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent, // Mantém o gradiente
-                    shadowColor:
-                        Colors
-                            .transparent, // Remove sombra para um visual limpo
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -109,6 +105,22 @@ class GradientBackgroundScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  /// Rota com animação tipo "saltar" (bounce in)
+  Route _createBounceRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => InicialPage(),
+      transitionDuration: Duration(milliseconds: 400),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final bounceAnimation = CurvedAnimation(
+          parent: animation,
+          curve: Curves.elasticOut, // efeito de pulo
+        );
+
+        return ScaleTransition(scale: bounceAnimation, child: child);
+      },
     );
   }
 }

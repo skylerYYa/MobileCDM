@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'Obrigado.dart'; // Importe aqui seu arquivo Obrigado.dart
 
 void main() => runApp(
-  MaterialApp(debugShowCheckedModeBanner: false, home: FormularioPage()),
+  MaterialApp(debugShowCheckedModeBanner: false, home: FormularioPage2()),
 );
 
-class FormularioPage extends StatefulWidget {
+class FormularioPage2 extends StatefulWidget {
   @override
   _FormularioPageState createState() => _FormularioPageState();
 }
 
-class _FormularioPageState extends State<FormularioPage> {
+class _FormularioPageState extends State<FormularioPage2> {
   final _formKey = GlobalKey<FormState>();
   String? _respostaFrutas;
   String? _respostaCafe;
@@ -208,9 +209,10 @@ class _FormularioPageState extends State<FormularioPage> {
                           child: GestureDetector(
                             onTap: () {
                               if (_formKey.currentState!.validate()) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Formulário enviado!'),
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ObrigadoPage(),
                                   ),
                                 );
                               }

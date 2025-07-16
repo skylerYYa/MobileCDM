@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-
-void main() => runApp(
-  MaterialApp(debugShowCheckedModeBanner: false, home: FormularioPage()),
-);
+import 'Formulario2.dart';
 
 class FormularioPage extends StatefulWidget {
   @override
@@ -43,7 +40,6 @@ class _FormularioPageState extends State<FormularioPage> {
               ),
             ),
           ),
-          // Conteúdo do formulário
           Column(
             children: [
               PreferredSize(
@@ -99,20 +95,20 @@ class _FormularioPageState extends State<FormularioPage> {
                                       fontSize: 16,
                                     ),
                                   ),
-                                  ...['Matutino', 'Vespertino', 'Noturno'].map((
-                                    turno,
-                                  ) {
-                                    return RadioListTile<String>(
-                                      title: Text(turno),
-                                      value: turno,
-                                      groupValue: _turnoSelecionado,
-                                      onChanged: (val) {
-                                        setState(() {
-                                          _turnoSelecionado = val;
-                                        });
-                                      },
-                                    );
-                                  }).toList(),
+                                  ...['Matutino', 'Vespertino', 'Noturno']
+                                      .map(
+                                        (turno) => RadioListTile<String>(
+                                          title: Text(turno),
+                                          value: turno,
+                                          groupValue: _turnoSelecionado,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              _turnoSelecionado = val;
+                                            });
+                                          },
+                                        ),
+                                      )
+                                      .toList(),
                                   SizedBox(height: 24),
                                   Text(
                                     'Qual é a frequência com que você faz as refeições na escola?',
@@ -122,22 +118,24 @@ class _FormularioPageState extends State<FormularioPage> {
                                     ),
                                   ),
                                   ...[
-                                    'Sempre',
-                                    'Nunca',
-                                    'Eventualmente',
-                                    'Raramente',
-                                  ].map((opcao) {
-                                    return RadioListTile<String>(
-                                      title: Text(opcao),
-                                      value: opcao,
-                                      groupValue: _frequenciaSelecionada,
-                                      onChanged: (val) {
-                                        setState(() {
-                                          _frequenciaSelecionada = val;
-                                        });
-                                      },
-                                    );
-                                  }).toList(),
+                                        'Sempre',
+                                        'Nunca',
+                                        'Eventualmente',
+                                        'Raramente',
+                                      ]
+                                      .map(
+                                        (opcao) => RadioListTile<String>(
+                                          title: Text(opcao),
+                                          value: opcao,
+                                          groupValue: _frequenciaSelecionada,
+                                          onChanged: (val) {
+                                            setState(() {
+                                              _frequenciaSelecionada = val;
+                                            });
+                                          },
+                                        ),
+                                      )
+                                      .toList(),
                                   SizedBox(height: 24),
                                   Text(
                                     'Quais pratos você considera mais agradáveis?',
@@ -199,7 +197,7 @@ class _FormularioPageState extends State<FormularioPage> {
                             bottom: 0,
                             right: 0,
                             child: GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 if (_formKey.currentState!.validate()) {
                                   _formKey.currentState!.save();
 
@@ -225,13 +223,47 @@ class _FormularioPageState extends State<FormularioPage> {
                                     return;
                                   }
 
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Formulário validado com sucesso!',
-                                      ),
-                                    ),
-                                  );
+                                  final DateTime? dataFinal =
+                                      await Navigator.push(
+                                        context,
+                                        PageRouteBuilder(
+                                          transitionDuration: Duration(
+                                            milliseconds: 500,
+                                          ),
+                                          pageBuilder:
+                                              (
+                                                context,
+                                                animation,
+                                                secondaryAnimation,
+                                              ) => FormularioPage2(),
+                                          transitionsBuilder: (
+                                            context,
+                                            animation,
+                                            secondaryAnimation,
+                                            child,
+                                          ) {
+                                            final scaleAnimation =
+                                                Tween<double>(
+                                                  begin: 0.8,
+                                                  end: 1.0,
+                                                ).animate(
+                                                  CurvedAnimation(
+                                                    parent: animation,
+                                                    curve: Curves.easeOutBack,
+                                                  ),
+                                                );
+
+                                            return ScaleTransition(
+                                              scale: scaleAnimation,
+                                              child: child,
+                                            );
+                                          },
+                                        ),
+                                      );
+
+                                  if (dataFinal != null) {
+                                    Navigator.pop(context, dataFinal);
+                                  }
                                 }
                               },
                               child: Container(

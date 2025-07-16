@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Formulario.dart'; // Certifique-se de que o caminho está correto
 
 void main() {
   runApp(MyApp());
@@ -7,16 +8,16 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: LoginScreen(), debugShowCheckedModeBanner: false);
+    return MaterialApp(home: InicialPage(), debugShowCheckedModeBanner: false);
   }
 }
 
-class LoginScreen extends StatefulWidget {
+class InicialPage extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<InicialPage> {
   final TextEditingController rmController = TextEditingController();
   final TextEditingController senhaController = TextEditingController();
   String rmError = "";
@@ -35,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (rmController.text.isNotEmpty && senhaController.text.isNotEmpty) {
-      _showSuccessDialog();
+      _showSuccessDialog(); // Mostra alerta e depois navega
     }
   }
 
@@ -47,15 +48,42 @@ class _LoginScreenState extends State<LoginScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
-            title: Text("Login confirmado! 😊"),
+            title: Text("Login confirmado!"),
             content: Text("Bem-vindo!"),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  Navigator.pop(context); // Fecha o alerta
+                  Navigator.of(context).push(_createBounceRoute());
+                },
                 child: Text("OK"),
               ),
             ],
           ),
+    );
+  }
+
+  Route _createBounceRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => FormularioPage(),
+      transitionDuration: Duration(milliseconds: 600),
+      reverseTransitionDuration: Duration(milliseconds: 400),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final bounceIn = CurvedAnimation(
+          parent: animation,
+          curve: Curves.elasticOut,
+        );
+
+        final scaleOut = Tween<double>(begin: 1.0, end: 0.7).animate(
+          CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeInOut),
+        );
+
+        return ScaleTransition(
+          scale:
+              animation.status == AnimationStatus.reverse ? scaleOut : bounceIn,
+          child: child,
+        );
+      },
     );
   }
 
@@ -64,30 +92,23 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Cor de fundo com degradê
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  Color(0xFF732457),
-                  Color(0xFF8C336D),
-                ], // Manter o degradê original
+                colors: [Color(0xFF732457), Color(0xFF8C336D)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
           ),
-
           Positioned.fill(
             child: Opacity(
               opacity: 1,
               child: Image.asset('assents/images/CDM.png', fit: BoxFit.cover),
             ),
           ),
-
           Column(
             children: [
-              // Barra superior com degradê e imagem centralizada
               Container(
                 height: 100,
                 decoration: BoxDecoration(
@@ -100,21 +121,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Center(
                   child: Image.asset(
                     "assents/images/FiebCDM2.png",
-                    height: 98, // Define o tamanho da imagem
+                    height: 98,
                     fit: BoxFit.fitWidth,
                   ),
                 ),
               ),
-
               Expanded(
                 child: Center(
                   child: Container(
                     padding: EdgeInsets.all(20),
                     margin: EdgeInsets.symmetric(horizontal: 40),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(
-                        0.9,
-                      ), // Fundo semi-transparente para melhorar a legibilidade
+                      color: Colors.white.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
@@ -150,16 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         SizedBox(height: 20),
                         _buildGradientButton(context, "Entrar"),
-                        SizedBox(height: 10),
-                        TextButton(
-                          onPressed: () {
-                            // Lógica de recuperação de senha
-                          },
-                          child: Text(
-                            'Esqueceu a senha?',
-                            style: TextStyle(color: Colors.black54),
-                          ),
-                        ),
+                        // Opção "Esqueceu a senha?" removida
                       ],
                     ),
                   ),

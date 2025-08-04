@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Formulario.dart'; // Certifique-se de que o caminho está correto
+import 'Inicial.dart'; // Certifique-se de que o caminho está correto para InicialPage
 
 void main() {
   runApp(MyApp());
@@ -8,91 +8,24 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: InicialPage(), debugShowCheckedModeBanner: false);
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: EntradaPage(),
+    );
   }
 }
 
-class InicialPage extends StatefulWidget {
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<InicialPage> {
-  final TextEditingController rmController = TextEditingController();
-  final TextEditingController senhaController = TextEditingController();
-  String rmError = "";
-  String senhaError = "";
-
-  void _validateFields() {
-    setState(() {
-      rmError =
-          rmController.text.isEmpty
-              ? "Preencha o campo com as informações"
-              : "";
-      senhaError =
-          senhaController.text.isEmpty
-              ? "Preencha o campo com as informações"
-              : "";
-    });
-
-    if (rmController.text.isNotEmpty && senhaController.text.isNotEmpty) {
-      _showSuccessDialog(); // Mostra alerta e depois navega
-    }
-  }
-
-  void _showSuccessDialog() {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            title: Text("Login confirmado!"),
-            content: Text("Bem-vindo!"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Fecha o alerta
-                  Navigator.of(context).push(_createBounceRoute());
-                },
-                child: Text("OK"),
-              ),
-            ],
-          ),
-    );
-  }
-
-  Route _createBounceRoute() {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => FormularioPage(),
-      transitionDuration: Duration(milliseconds: 600),
-      reverseTransitionDuration: Duration(milliseconds: 400),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        final bounceIn = CurvedAnimation(
-          parent: animation,
-          curve: Curves.elasticOut,
-        );
-
-        final scaleOut = Tween<double>(begin: 1.0, end: 0.7).animate(
-          CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeInOut),
-        );
-
-        return ScaleTransition(
-          scale:
-              animation.status == AnimationStatus.reverse ? scaleOut : bounceIn,
-          child: child,
-        );
-      },
-    );
-  }
-
+class EntradaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
+          // Fundo gradiente
           Container(
+            width: double.infinity,
+            height: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xFF732457), Color(0xFF8C336D)],
@@ -101,16 +34,19 @@ class _LoginScreenState extends State<InicialPage> {
               ),
             ),
           ),
+          // Imagem de fundo
           Positioned.fill(
             child: Opacity(
               opacity: 1,
               child: Image.asset('assents/images/CDM.png', fit: BoxFit.cover),
             ),
           ),
+          // Conteúdo da tela
           Column(
             children: [
               Container(
-                height: 100,
+                width: double.infinity,
+                height: 90,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Color(0xFFA3BF3B), Color(0xFF6FAC45)],
@@ -120,60 +56,51 @@ class _LoginScreenState extends State<InicialPage> {
                 ),
                 child: Center(
                   child: Image.asset(
-                    "assents/images/FiebCDM2.png",
-                    height: 98,
-                    fit: BoxFit.fitWidth,
+                    'assents/images/FiebCDM2.png',
+                    width: 900,
+                    height: 100,
+                    fit: BoxFit.contain,
                   ),
                 ),
               ),
-              Expanded(
-                child: Center(
-                  child: Container(
-                    padding: EdgeInsets.all(20),
-                    margin: EdgeInsets.symmetric(horizontal: 40),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 10,
-                          spreadRadius: 2,
-                        ),
-                      ],
+              Spacer(flex: 3),
+              Center(
+                child: Image.asset(
+                  'assents/images/Garfo.png',
+                  width: 300,
+                  height: 200,
+                  fit: BoxFit.contain,
+                ),
+              ),
+              Spacer(flex: 2),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFA3BF3B), Color(0xFF6FAC45)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(_createBounceRoute());
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Login',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        _buildTextField(
-                          "Rm...",
-                          controller: rmController,
-                          errorText: rmError,
-                        ),
-                        SizedBox(height: 10),
-                        _buildTextField(
-                          "Senha...",
-                          controller: senhaController,
-                          obscureText: true,
-                          errorText: senhaError,
-                        ),
-                        SizedBox(height: 20),
-                        _buildGradientButton(context, "Entrar"),
-                        // Opção "Esqueceu a senha?" removida
-                      ],
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 80, vertical: 25),
+                  ),
+                  child: Text(
+                    'Entrar',
+                    style: TextStyle(fontSize: 24, color: Colors.white),
                   ),
                 ),
               ),
+              Spacer(flex: 2),
             ],
           ),
         ],
@@ -181,55 +108,19 @@ class _LoginScreenState extends State<InicialPage> {
     );
   }
 
-  Widget _buildTextField(
-    String hint, {
-    required TextEditingController controller,
-    bool obscureText = false,
-    required String errorText,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextField(
-          controller: controller,
-          obscureText: obscureText,
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Colors.grey[200],
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-            hintText: hint,
-          ),
-        ),
-        if (errorText.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 5, left: 8),
-            child: Text(
-              errorText,
-              style: TextStyle(color: Colors.red, fontSize: 14),
-            ),
-          ),
-      ],
-    );
-  }
+  /// Rota com animação tipo "saltar" (bounce in)
+  Route _createBounceRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => InicialPage(),
+      transitionDuration: Duration(milliseconds: 400),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        final bounceAnimation = CurvedAnimation(
+          parent: animation,
+          curve: Curves.elasticOut, // efeito de pulo
+        );
 
-  Widget _buildGradientButton(BuildContext context, String text) {
-    return Container(
-      width: double.infinity,
-      height: 50,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFFA3BF3B), Color(0xFF6FAC45)],
-        ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          shadowColor: Colors.transparent,
-        ),
-        onPressed: _validateFields,
-        child: Text(text, style: TextStyle(fontSize: 18, color: Colors.white)),
-      ),
+        return ScaleTransition(scale: bounceAnimation, child: child);
+      },
     );
   }
 }

@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'Formulario2.dart';
+import 'usuario.dart';
 
 class FormularioPage extends StatefulWidget {
   @override
   _FormularioPageState createState() => _FormularioPageState();
+
+  final Usuario usuario;
+
+  const FormularioPage({super.key, required this.usuario});
+
 }
 
 class _FormularioPageState extends State<FormularioPage> {

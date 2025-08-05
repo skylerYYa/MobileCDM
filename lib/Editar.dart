@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'Formulario.dart'; // Certifique-se de que o arquivo e a classe existem
+import 'usuario.dart';
 
 void main() => runApp(MyApp());
+
+late final Usuario usuario;
 
 class MyApp extends StatelessWidget {
   @override
@@ -120,7 +123,7 @@ class EditarPage extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => FormularioPage(),
+                                    builder: (context) => FormularioPage(usuario: usuario),
                                   ),
                                 );
                               },

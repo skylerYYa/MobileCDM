@@ -1,43 +1,62 @@
 import 'package:flutter/material.dart';
-import 'Formulario2.dart';
+import 'Obrigado.dart';
 import 'usuario.dart';
 
 class FormularioPage extends StatefulWidget {
-  @override
-  _FormularioPageState createState() => _FormularioPageState();
-
   final Usuario usuario;
-
   const FormularioPage({super.key, required this.usuario});
 
+  @override
+  _FormularioCompletoPageState createState() => _FormularioCompletoPageState();
 }
 
-class _FormularioPageState extends State<FormularioPage> {
+class _FormularioCompletoPageState extends State<FormularioPage> {
   final _formKey = GlobalKey<FormState>();
 
+  // Etapa 1
   String? _turnoSelecionado;
   String? _frequenciaSelecionada;
-  final TextEditingController _pratosPositivosController =
-      TextEditingController();
-  final TextEditingController _pratosNegativosController =
-      TextEditingController();
+  final _pratosPositivosController = TextEditingController();
+  final _pratosNegativosController = TextEditingController();
+
+  // Etapa 2
+  final _restricao1Controller = TextEditingController();
+  final _restricao2Controller = TextEditingController();
+  String? _respostaFrutas;
+  String? _respostaCafe;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFA3BF3B), Color(0xFF6FAC45)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            centerTitle: true,
+            title: Image.asset('assents/images/FiebCDM2.png', height: 98),
+          ),
+        ),
+      ),
       body: Stack(
         children: [
-          // Fundo degradê
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color.fromARGB(255, 109, 34, 83), Color(0xFF8C336D)],
+                colors: [Color(0xFF732457), Color(0xFF8C336D)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
           ),
-          // Imagem por cima do degradê
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -46,271 +65,145 @@ class _FormularioPageState extends State<FormularioPage> {
               ),
             ),
           ),
-          Column(
-            children: [
-              PreferredSize(
-                preferredSize: Size.fromHeight(kToolbarHeight),
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFFA3BF3B), Color(0xFF6FAC45)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                  child: AppBar(
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    centerTitle: true,
-                    title: Image.asset(
-                      'assents/images/FiebCDM2.png',
-                      height: 98,
-                    ),
-                  ),
+          Padding(
+            padding: EdgeInsets.all(16),
+            child: Center(
+              child: Container(
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
                 ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Center(
-                    child: Container(
-                      padding: EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 8,
-                            offset: Offset(0, 4),
+                child: Form(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Turno
+                        Text('Em que turno você estuda?', style: _titulo()),
+                        ...['Matutino', 'Vespertino', 'Noturno'].map(
+                          (turno) => RadioListTile<String>(
+                            title: Text(turno),
+                            value: turno,
+                            groupValue: _turnoSelecionado,
+                            onChanged: (val) => setState(() => _turnoSelecionado = val),
                           ),
-                        ],
-                      ),
-                      child: Stack(
-                        children: [
-                          Form(
-                            key: _formKey,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Em que turno você estuda?',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  ...['Matutino', 'Vespertino', 'Noturno']
-                                      .map(
-                                        (turno) => RadioListTile<String>(
-                                          title: Text(turno),
-                                          value: turno,
-                                          groupValue: _turnoSelecionado,
-                                          onChanged: (val) {
-                                            setState(() {
-                                              _turnoSelecionado = val;
-                                            });
-                                          },
-                                        ),
-                                      )
-                                      .toList(),
-                                  SizedBox(height: 24),
-                                  Text(
-                                    'Qual é a frequência com que você faz as refeições na escola?',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  ...[
-                                        'Sempre',
-                                        'Nunca',
-                                        'Eventualmente',
-                                        'Raramente',
-                                      ]
-                                      .map(
-                                        (opcao) => RadioListTile<String>(
-                                          title: Text(opcao),
-                                          value: opcao,
-                                          groupValue: _frequenciaSelecionada,
-                                          onChanged: (val) {
-                                            setState(() {
-                                              _frequenciaSelecionada = val;
-                                            });
-                                          },
-                                        ),
-                                      )
-                                      .toList(),
-                                  SizedBox(height: 24),
-                                  Text(
-                                    'Quais pratos você considera mais agradáveis?',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  TextFormField(
-                                    controller: _pratosPositivosController,
-                                    maxLines: 3,
-                                    decoration: InputDecoration(
-                                      hintText: 'Descreva aqui...',
-                                      border: OutlineInputBorder(),
-                                      contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 10,
-                                      ),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Por favor, escreva sua resposta.';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  SizedBox(height: 24),
-                                  Text(
-                                    'Quais pratos você considera menos agradáveis?',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  TextFormField(
-                                    controller: _pratosNegativosController,
-                                    maxLines: 3,
-                                    decoration: InputDecoration(
-                                      hintText: 'Descreva aqui...',
-                                      border: OutlineInputBorder(),
-                                      contentPadding: EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 10,
-                                      ),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Por favor, escreva sua resposta.';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  SizedBox(height: 60),
-                                ],
-                              ),
-                            ),
+                        ),
+                        SizedBox(height: 24),
+
+                        // Frequência
+                        Text('Qual é a frequência com que você faz as refeições na escola?', style: _titulo()),
+                        ...['Sempre', 'Nunca', 'Eventualmente', 'Raramente'].map(
+                          (opcao) => RadioListTile<String>(
+                            title: Text(opcao),
+                            value: opcao,
+                            groupValue: _frequenciaSelecionada,
+                            onChanged: (val) => setState(() => _frequenciaSelecionada = val),
                           ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: GestureDetector(
-                              onTap: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  _formKey.currentState!.save();
+                        ),
+                        SizedBox(height: 24),
 
-                                  if (_turnoSelecionado == null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Selecione uma opção para o turno de estudo.',
-                                        ),
-                                      ),
-                                    );
-                                    return;
-                                  }
+                        // Pratos positivos
+                        Text('Quais pratos você considera mais agradáveis?', style: _titulo()),
+                        _campoTexto(_pratosPositivosController),
 
-                                  if (_frequenciaSelecionada == null) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Selecione uma opção para a frequência das refeições.',
-                                        ),
-                                      ),
-                                    );
-                                    return;
-                                  }
+                        SizedBox(height: 24),
+                        // Pratos negativos
+                        Text('Quais pratos você considera menos agradáveis?', style: _titulo()),
+                        _campoTexto(_pratosNegativosController),
 
-                                  final DateTime? dataFinal =
-                                      await Navigator.push(
-                                        context,
-                                        PageRouteBuilder(
-                                          transitionDuration: Duration(
-                                            milliseconds: 500,
-                                          ),
-                                          pageBuilder:
-                                              (
-                                                context,
-                                                animation,
-                                                secondaryAnimation,
-                                              ) => FormularioPage2(),
-                                          transitionsBuilder: (
-                                            context,
-                                            animation,
-                                            secondaryAnimation,
-                                            child,
-                                          ) {
-                                            final scaleAnimation =
-                                                Tween<double>(
-                                                  begin: 0.8,
-                                                  end: 1.0,
-                                                ).animate(
-                                                  CurvedAnimation(
-                                                    parent: animation,
-                                                    curve: Curves.easeOutBack,
-                                                  ),
-                                                );
+                        SizedBox(height: 24),
+                        // Restrição alimentar 1
+                        Text('Informe se há alguma alergia ou restrição alimentar:', style: _titulo()),
+                        _campoTexto(_restricao1Controller),
 
-                                            return ScaleTransition(
-                                              scale: scaleAnimation,
-                                              child: child,
-                                            );
-                                          },
-                                        ),
-                                      );
+                        SizedBox(height: 24),
+                        // Restrição alimentar 2
+                        Text('Informe se há outra restrição alimentar:', style: _titulo()),
+                        _campoTexto(_restricao2Controller),
 
-                                  if (dataFinal != null) {
-                                    Navigator.pop(context, dataFinal);
-                                  }
+                        SizedBox(height: 24),
+                        // Frutas
+                        Text('Costuma incluir frutas em sua dieta diária?', style: _titulo()),
+                        ...['Sim', 'Não', 'Eventualmente'].map(
+                          (opcao) => RadioListTile<String>(
+                            title: Text(opcao),
+                            value: opcao,
+                            groupValue: _respostaFrutas,
+                            onChanged: (val) => setState(() => _respostaFrutas = val),
+                          ),
+                        ),
+
+                        SizedBox(height: 24),
+                        // Café da manhã
+                        Text('O café da manhã faz parte da sua rotina alimentar diária?', style: _titulo()),
+                        ...['Sim', 'Não', 'Eventualmente'].map(
+                          (opcao) => RadioListTile<String>(
+                            title: Text(opcao),
+                            value: opcao,
+                            groupValue: _respostaCafe,
+                            onChanged: (val) => setState(() => _respostaCafe = val),
+                          ),
+                        ),
+
+                        SizedBox(height: 30),
+                        Center(
+                          child: GestureDetector(
+                            onTap: () {
+                              if (_formKey.currentState!.validate()) {
+                                if (_turnoSelecionado == null || _frequenciaSelecionada == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Preencha todas as opções obrigatórias')),
+                                  );
+                                  return;
                                 }
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 12,
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ObrigadoPage()),
+                                );
+                              }
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Color(0xFFA3BF3B), Color(0xFF6FAC45)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
                                 ),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xFFA3BF3B),
-                                      Color(0xFF6FAC45),
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(12),
-                                    bottomRight: Radius.circular(12),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Próximo',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                borderRadius: BorderRadius.circular(12),
                               ),
+                              child: Text('Enviar', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ],
+            ),
           ),
         ],
       ),
+    );
+  }
+
+  TextStyle _titulo() => TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+
+  Widget _campoTexto(TextEditingController controller) {
+    return TextFormField(
+      controller: controller,
+      maxLines: 3,
+      decoration: InputDecoration(
+        hintText: 'Descreva aqui...',
+        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      ),
+      validator: (value) => value == null || value.isEmpty ? 'Campo obrigatório' : null,
     );
   }
 }

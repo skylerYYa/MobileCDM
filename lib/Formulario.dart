@@ -120,11 +120,6 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
                         _campoTexto(_restricao1Controller),
 
                         SizedBox(height: 24),
-                        // Restrição alimentar 2
-                        Text('Informe se há outra restrição alimentar:', style: _titulo()),
-                        _campoTexto(_restricao2Controller),
-
-                        SizedBox(height: 24),
                         // Frutas
                         Text('Costuma incluir frutas em sua dieta diária?', style: _titulo()),
                         ...['Sim', 'Não', 'Eventualmente'].map(

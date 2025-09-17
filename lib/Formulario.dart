@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'Obrigado.dart';
-import 'usuario.dart';
+// import 'Obrigado.dart'; // Removido
+import 'usuario.dart'; // aaaaaa
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import './models/formulario_model.dart'; // Supondo que você salvou a classe aqui
@@ -50,9 +50,9 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
       );
 
       if (response.statusCode == 200) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => ObrigadoPage()),
+        // Removido: Navegação para ObrigadoPage
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Formulário enviado com sucesso!')),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -190,10 +190,12 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
                           'Costuma incluir frutas em sua dieta diária?',
                           style: _titulo(),
                         ),
-                        ...['Sempre',
+                        ...[
+                          'Sempre',
                           'Nunca',
                           'Eventualmente',
-                          'Raramente',].map(
+                          'Raramente',
+                        ].map(
                           (opcao) => RadioListTile<String>(
                             title: Text(opcao),
                             value: opcao,
@@ -209,10 +211,12 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
                           'O café da manhã faz parte da sua rotina alimentar diária?',
                           style: _titulo(),
                         ),
-                        ...['Sempre',
+                        ...[
+                          'Sempre',
                           'Nunca',
                           'Eventualmente',
-                          'Raramente',].map(
+                          'Raramente',
+                        ].map(
                           (opcao) => RadioListTile<String>(
                             title: Text(opcao),
                             value: opcao,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'Obrigado.dart';
 import 'usuario.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import './models/formulario_model.dart'; // Supondo que você salvou a classe aqui
 
 class FormularioPage extends StatefulWidget {
   final Usuario usuario;
@@ -24,6 +27,46 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
   final _restricao2Controller = TextEditingController();
   String? _respostaFrutas;
   String? _respostaCafe;
+
+  Future<void> _enviarFormulario() async {
+    final url = Uri.parse('http://localhost:8080/formulario/save');
+
+    final formulario = FormularioModel(
+      usuarioId: widget.usuario.id,
+      turno: _turnoSelecionado!,
+      frequenciaRefeicao: _frequenciaSelecionada!,
+      pratosAgradaveis: _pratosPositivosController.text,
+      pratosMenos: _pratosNegativosController.text,
+      restricoes: _restricao1Controller.text,
+      frequenciaSobremesa: _respostaFrutas!,
+      frequenciaCafe: _respostaCafe!,
+    );
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(formulario.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ObrigadoPage()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Erro ao enviar formulário: ${response.statusCode}'),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erro de conexão: $e')));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,58 +131,94 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
                             title: Text(turno),
                             value: turno,
                             groupValue: _turnoSelecionado,
-                            onChanged: (val) => setState(() => _turnoSelecionado = val),
+                            onChanged:
+                                (val) =>
+                                    setState(() => _turnoSelecionado = val),
                           ),
                         ),
                         SizedBox(height: 24),
 
                         // Frequência
-                        Text('Qual é a frequência com que você faz as refeições na escola?', style: _titulo()),
-                        ...['Sempre', 'Nunca', 'Eventualmente', 'Raramente'].map(
+                        Text(
+                          'Qual é a frequência com que você faz as refeições na escola?',
+                          style: _titulo(),
+                        ),
+                        ...[
+                          'Sempre',
+                          'Nunca',
+                          'Eventualmente',
+                          'Raramente',
+                        ].map(
                           (opcao) => RadioListTile<String>(
                             title: Text(opcao),
                             value: opcao,
                             groupValue: _frequenciaSelecionada,
-                            onChanged: (val) => setState(() => _frequenciaSelecionada = val),
+                            onChanged:
+                                (val) => setState(
+                                  () => _frequenciaSelecionada = val,
+                                ),
                           ),
                         ),
                         SizedBox(height: 24),
 
                         // Pratos positivos
-                        Text('Quais pratos você considera mais agradáveis?', style: _titulo()),
+                        Text(
+                          'Quais pratos você considera mais agradáveis?',
+                          style: _titulo(),
+                        ),
                         _campoTexto(_pratosPositivosController),
 
                         SizedBox(height: 24),
                         // Pratos negativos
-                        Text('Quais pratos você considera menos agradáveis?', style: _titulo()),
+                        Text(
+                          'Quais pratos você considera menos agradáveis?',
+                          style: _titulo(),
+                        ),
                         _campoTexto(_pratosNegativosController),
 
                         SizedBox(height: 24),
                         // Restrição alimentar 1
-                        Text('Informe se há alguma alergia ou restrição alimentar:', style: _titulo()),
+                        Text(
+                          'Informe se há alguma alergia ou restrição alimentar:',
+                          style: _titulo(),
+                        ),
                         _campoTexto(_restricao1Controller),
 
                         SizedBox(height: 24),
                         // Frutas
-                        Text('Costuma incluir frutas em sua dieta diária?', style: _titulo()),
-                        ...['Sim', 'Não', 'Eventualmente'].map(
+                        Text(
+                          'Costuma incluir frutas em sua dieta diária?',
+                          style: _titulo(),
+                        ),
+                        ...['Sempre',
+                          'Nunca',
+                          'Eventualmente',
+                          'Raramente',].map(
                           (opcao) => RadioListTile<String>(
                             title: Text(opcao),
                             value: opcao,
                             groupValue: _respostaFrutas,
-                            onChanged: (val) => setState(() => _respostaFrutas = val),
+                            onChanged:
+                                (val) => setState(() => _respostaFrutas = val),
                           ),
                         ),
 
                         SizedBox(height: 24),
                         // Café da manhã
-                        Text('O café da manhã faz parte da sua rotina alimentar diária?', style: _titulo()),
-                        ...['Sim', 'Não', 'Eventualmente'].map(
+                        Text(
+                          'O café da manhã faz parte da sua rotina alimentar diária?',
+                          style: _titulo(),
+                        ),
+                        ...['Sempre',
+                          'Nunca',
+                          'Eventualmente',
+                          'Raramente',].map(
                           (opcao) => RadioListTile<String>(
                             title: Text(opcao),
                             value: opcao,
                             groupValue: _respostaCafe,
-                            onChanged: (val) => setState(() => _respostaCafe = val),
+                            onChanged:
+                                (val) => setState(() => _respostaCafe = val),
                           ),
                         ),
 
@@ -148,30 +227,45 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
                           child: GestureDetector(
                             onTap: () {
                               if (_formKey.currentState!.validate()) {
-                                if (_turnoSelecionado == null || _frequenciaSelecionada == null) {
+                                if (_turnoSelecionado == null ||
+                                    _frequenciaSelecionada == null ||
+                                    _respostaFrutas == null ||
+                                    _respostaCafe == null) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Preencha todas as opções obrigatórias')),
+                                    SnackBar(
+                                      content: Text(
+                                        'Preencha todas as opções obrigatórias',
+                                      ),
+                                    ),
                                   );
                                   return;
                                 }
-
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => ObrigadoPage()),
-                                );
+                                _enviarFormulario();
                               }
                             },
                             child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 12,
+                              ),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
-                                  colors: [Color(0xFFA3BF3B), Color(0xFF6FAC45)],
+                                  colors: [
+                                    Color(0xFFA3BF3B),
+                                    Color(0xFF6FAC45),
+                                  ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Text('Enviar', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                              child: Text(
+                                'Enviar',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -198,7 +292,9 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
         border: OutlineInputBorder(),
         contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       ),
-      validator: (value) => value == null || value.isEmpty ? 'Campo obrigatório' : null,
+      validator:
+          (value) =>
+              value == null || value.isEmpty ? 'Campo obrigatório' : null,
     );
   }
 }

@@ -28,12 +28,21 @@ class _LoginScreenState extends State<InicialPage> {
 
   void _validateFields() async {
     setState(() {
-      rmError = rmController.text.isEmpty ? "Preencha o campo com as informações" : "";
-      senhaError = senhaController.text.isEmpty ? "Preencha o campo com as informações" : "";
+      rmError =
+          rmController.text.isEmpty
+              ? "Preencha o campo com as informações"
+              : "";
+      senhaError =
+          senhaController.text.isEmpty
+              ? "Preencha o campo com as informações"
+              : "";
     });
 
     if (rmController.text.isNotEmpty && senhaController.text.isNotEmpty) {
-      final usuario = await _fazerLogin(rmController.text, senhaController.text);
+      final usuario = await _fazerLogin(
+        rmController.text,
+        senhaController.text,
+      );
       if (usuario != null) {
         _showSuccessDialog(usuario);
       } else {
@@ -43,7 +52,9 @@ class _LoginScreenState extends State<InicialPage> {
   }
 
   Future<Usuario?> _fazerLogin(String rm, String senha) async {
-    final url = Uri.parse('http://localhost:8080/usuario/login-mobile'); // ajuste IP se necessário
+    final url = Uri.parse(
+      'http://localhost:8080/usuario/login-mobile',
+    ); // ajuste IP se necessário
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -61,50 +72,62 @@ class _LoginScreenState extends State<InicialPage> {
   void _showSuccessDialog(Usuario usuario) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text("Login confirmado!"),
-        content: Text("Bem-vindo, ${usuario.nome}!"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.of(context).push(_createBounceRoute(usuario));
-            },
-            child: Text("OK"),
+      builder:
+          (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: Text("Login confirmado!"),
+            content: Text("Bem-vindo, ${usuario.nome}!"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.of(context).push(_createBounceRoute(usuario));
+                },
+                child: Text("OK"),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   void _showErrorDialog() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Erro"),
-        content: Text("Dados incorretos ou problema na conexão"),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text("OK")),
-        ],
-      ),
+      builder:
+          (context) => AlertDialog(
+            title: Text("Erro"),
+            content: Text("Dados incorretos ou problema na conexão"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("OK"),
+              ),
+            ],
+          ),
     );
   }
 
   Route _createBounceRoute(Usuario usuario) {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          FormularioPage(usuario: usuario),
+      pageBuilder:
+          (context, animation, secondaryAnimation) =>
+              FormularioPage(usuario: usuario),
       transitionDuration: Duration(milliseconds: 600),
       reverseTransitionDuration: Duration(milliseconds: 400),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        final bounceIn = CurvedAnimation(parent: animation, curve: Curves.elasticOut);
+        final bounceIn = CurvedAnimation(
+          parent: animation,
+          curve: Curves.elasticOut,
+        );
         final scaleOut = Tween<double>(begin: 1.0, end: 0.7).animate(
           CurvedAnimation(parent: secondaryAnimation, curve: Curves.easeInOut),
         );
 
         return ScaleTransition(
-          scale: animation.status == AnimationStatus.reverse ? scaleOut : bounceIn,
+          scale:
+              animation.status == AnimationStatus.reverse ? scaleOut : bounceIn,
           child: child,
         );
       },
@@ -114,75 +137,93 @@ class _LoginScreenState extends State<InicialPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: [
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF732457), Color(0xFF8C336D)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-        Positioned.fill(
-          child: Opacity(
-            opacity: 1,
-            child: Image.asset('assents/images/CDM.png', fit: BoxFit.cover),
-          ),
-        ),
-        Column(
-          children: [
-            Container(
-              height: 100,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFFA3BF3B), Color(0xFF6FAC45)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Center(
-                child: Image.asset(
-                  "assents/images/FiebCDM2.png",
-                  height: 98,
-                  fit: BoxFit.fitWidth,
-                ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFEBEBEB), Color(0xFFFFFFFF)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
             ),
-            Expanded(
-              child: Center(
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  margin: EdgeInsets.symmetric(horizontal: 40),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.9),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                      ),
-                    ],
+          ),
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.1,
+              child: Image.asset('assents/images/CDM.png', fit: BoxFit.cover),
+            ),
+          ),
+          Column(
+            children: [
+              Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFa64182), Color(0xFF883069)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('Login', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87)),
-                      SizedBox(height: 20),
-                      _buildTextField("Rm...", controller: rmController, errorText: rmError),
-                      SizedBox(height: 10),
-                      _buildTextField("Senha...", controller: senhaController, obscureText: true, errorText: senhaError),
-                      SizedBox(height: 20),
-                      _buildGradientButton(context, "Entrar"),
-                    ],
+                ),
+                child: Center(
+                  child: Image.asset(
+                    "assents/images/cdmgarfo.png",
+                    height: 78,
+                    fit: BoxFit.fitWidth,
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ]),
+              Expanded(
+                child: Center(
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    margin: EdgeInsets.symmetric(horizontal: 40),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFFFFF).withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color.fromARGB(255, 119, 119, 119),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Login',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        _buildTextField(
+                          "Rm...",
+                          controller: rmController,
+                          errorText: rmError,
+                        ),
+                        SizedBox(height: 10),
+                        _buildTextField(
+                          "Senha...",
+                          controller: senhaController,
+                          obscureText: true,
+                          errorText: senhaError,
+                        ),
+                        SizedBox(height: 20),
+                        _buildGradientButton(context, "Entrar"),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -208,7 +249,10 @@ class _LoginScreenState extends State<InicialPage> {
         if (errorText.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(top: 5, left: 8),
-            child: Text(errorText, style: TextStyle(color: Colors.red, fontSize: 14)),
+            child: Text(
+              errorText,
+              style: TextStyle(color: Colors.red, fontSize: 14),
+            ),
           ),
       ],
     );
@@ -219,7 +263,9 @@ class _LoginScreenState extends State<InicialPage> {
       width: double.infinity,
       height: 50,
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [Color(0xFFA3BF3B), Color(0xFF6FAC45)]),
+        gradient: LinearGradient(
+          colors: [Color(0xFFA3BF3B), Color(0xFF6FAC45)],
+        ),
         borderRadius: BorderRadius.circular(12),
       ),
       child: ElevatedButton(

@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
-// import 'Obrigado.dart'; // Removido
-import 'usuario.dart'; // aaaaaa
+import 'usuario.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import './models/formulario_model.dart'; // Supondo que você salvou a classe aqui
+import './models/formulario_model.dart';
+import 'Editar.dart';
 
 class FormularioPage extends StatefulWidget {
   final Usuario usuario;
-  const FormularioPage({super.key, required this.usuario});
+  final FormularioModel? formularioPreenchido;
+
+  const FormularioPage({
+    super.key,
+    required this.usuario,
+    this.formularioPreenchido,
+  });
 
   @override
   _FormularioCompletoPageState createState() => _FormularioCompletoPageState();
@@ -16,17 +22,29 @@ class FormularioPage extends StatefulWidget {
 class _FormularioCompletoPageState extends State<FormularioPage> {
   final _formKey = GlobalKey<FormState>();
 
-  // Etapa 1
   String? _turnoSelecionado;
   String? _frequenciaSelecionada;
   final _pratosPositivosController = TextEditingController();
   final _pratosNegativosController = TextEditingController();
-
-  // Etapa 2
   final _restricao1Controller = TextEditingController();
   final _restricao2Controller = TextEditingController();
   String? _respostaFrutas;
   String? _respostaCafe;
+
+  @override
+  void initState() {
+    super.initState();
+    final f = widget.formularioPreenchido;
+    if (f != null) {
+      _turnoSelecionado = f.turno;
+      _frequenciaSelecionada = f.frequenciaRefeicao;
+      _pratosPositivosController.text = f.pratosAgradaveis;
+      _pratosNegativosController.text = f.pratosMenos;
+      _restricao1Controller.text = f.restricoes;
+      _respostaFrutas = f.frequenciaSobremesa;
+      _respostaCafe = f.frequenciaCafe;
+    }
+  }
 
   Future<void> _enviarFormulario() async {
     final url = Uri.parse('http://localhost:8080/formulario/save');
@@ -50,9 +68,31 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
       );
 
       if (response.statusCode == 200) {
-        // Removido: Navegação para ObrigadoPage
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Formulário enviado com sucesso!')),
+        showDialog(
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                title: Text('Sucesso'),
+                content: Text('Formulário enviado com sucesso!! Obrigada.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => EditarPage(
+                                usuario: widget.usuario,
+                                formulario: formulario,
+                              ),
+                        ),
+                      );
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -76,7 +116,7 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFFA3BF3B), Color(0xFF6FAC45)],
+              colors: [Color(0xFFa64182), Color(0xFF883069)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -85,7 +125,7 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
-            title: Image.asset('assents/images/FiebCDM2.png', height: 98),
+            title: Image.asset('assents/images/cdmgarfo.png', height: 60),
           ),
         ),
       ),
@@ -94,18 +134,16 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF732457), Color(0xFF8C336D)],
+                colors: [Color(0xFFEBEBEB), Color(0xFFFFFFFF)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assents/images/CDM.png'),
-                fit: BoxFit.cover,
-              ),
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.3,
+              child: Image.asset('assents/images/CDM.png', fit: BoxFit.cover),
             ),
           ),
           Padding(
@@ -124,7 +162,6 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Turno
                         Text('Em que turno você estuda?', style: _titulo()),
                         ...['Matutino', 'Vespertino', 'Noturno'].map(
                           (turno) => RadioListTile<String>(
@@ -136,96 +173,69 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
                                     setState(() => _turnoSelecionado = val),
                           ),
                         ),
-                        SizedBox(height: 24),
-
-                        // Frequência
+                        SizedBox(height: 16),
                         Text(
-                          'Qual é a frequência com que você faz as refeições na escola?',
+                          'Com que frequência você faz refeições na escola?',
                           style: _titulo(),
                         ),
-                        ...[
-                          'Sempre',
-                          'Nunca',
-                          'Eventualmente',
-                          'Raramente',
-                        ].map(
-                          (opcao) => RadioListTile<String>(
-                            title: Text(opcao),
-                            value: opcao,
-                            groupValue: _frequenciaSelecionada,
-                            onChanged:
-                                (val) => setState(
-                                  () => _frequenciaSelecionada = val,
-                                ),
-                          ),
+                        DropdownButtonFormField<String>(
+                          value: _frequenciaSelecionada,
+                          items:
+                              ['Todos os dias', 'Alguns dias', 'Raramente']
+                                  .map(
+                                    (opcao) => DropdownMenuItem(
+                                      value: opcao,
+                                      child: Text(opcao),
+                                    ),
+                                  )
+                                  .toList(),
+                          onChanged:
+                              (val) =>
+                                  setState(() => _frequenciaSelecionada = val),
+                          validator:
+                              (value) =>
+                                  value == null ? 'Campo obrigatório' : null,
                         ),
-                        SizedBox(height: 24),
-
-                        // Pratos positivos
-                        Text(
-                          'Quais pratos você considera mais agradáveis?',
-                          style: _titulo(),
-                        ),
+                        SizedBox(height: 16),
+                        Text('Quais pratos você gosta?', style: _titulo()),
                         _campoTexto(_pratosPositivosController),
-
-                        SizedBox(height: 24),
-                        // Pratos negativos
-                        Text(
-                          'Quais pratos você considera menos agradáveis?',
-                          style: _titulo(),
-                        ),
+                        SizedBox(height: 16),
+                        Text('Quais pratos você não gosta?', style: _titulo()),
                         _campoTexto(_pratosNegativosController),
-
-                        SizedBox(height: 24),
-                        // Restrição alimentar 1
+                        SizedBox(height: 16),
                         Text(
-                          'Informe se há alguma alergia ou restrição alimentar:',
+                          'Você tem alguma restrição alimentar?',
                           style: _titulo(),
                         ),
                         _campoTexto(_restricao1Controller),
-
-                        SizedBox(height: 24),
-                        // Frutas
+                        SizedBox(height: 16),
                         Text(
-                          'Costuma incluir frutas em sua dieta diária?',
+                          'Com que frequência você consome sobremesa?',
                           style: _titulo(),
                         ),
-                        ...[
-                          'Sempre',
-                          'Nunca',
-                          'Eventualmente',
-                          'Raramente',
-                        ].map(
-                          (opcao) => RadioListTile<String>(
-                            title: Text(opcao),
-                            value: opcao,
+                        ...['Sempre', 'Às vezes', 'Nunca'].map(
+                          (resposta) => RadioListTile<String>(
+                            title: Text(resposta),
+                            value: resposta,
                             groupValue: _respostaFrutas,
                             onChanged:
                                 (val) => setState(() => _respostaFrutas = val),
                           ),
                         ),
-
-                        SizedBox(height: 24),
-                        // Café da manhã
+                        SizedBox(height: 16),
                         Text(
-                          'O café da manhã faz parte da sua rotina alimentar diária?',
+                          'Com que frequência você consome café?',
                           style: _titulo(),
                         ),
-                        ...[
-                          'Sempre',
-                          'Nunca',
-                          'Eventualmente',
-                          'Raramente',
-                        ].map(
-                          (opcao) => RadioListTile<String>(
-                            title: Text(opcao),
-                            value: opcao,
+                        ...['Sempre', 'Às vezes', 'Nunca'].map(
+                          (resposta) => RadioListTile<String>(
+                            title: Text(resposta),
+                            value: resposta,
                             groupValue: _respostaCafe,
                             onChanged:
                                 (val) => setState(() => _respostaCafe = val),
                           ),
                         ),
-
                         SizedBox(height: 30),
                         Center(
                           child: GestureDetector(

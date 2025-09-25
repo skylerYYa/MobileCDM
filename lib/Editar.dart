@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
-import 'Formulario.dart'; // Certifique-se de que o arquivo e a classe existem
+import 'Formulario.dart';
 import 'usuario.dart';
-
-void main() => runApp(MyApp());
-
-late final Usuario usuario;
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Editar',
-      debugShowCheckedModeBanner: false,
-      home: EditarPage(),
-    );
-  }
-}
+import './models/formulario_model.dart';
 
 class EditarPage extends StatelessWidget {
+  final Usuario usuario;
+  final FormularioModel formulario;
+
+  const EditarPage({
+    super.key,
+    required this.usuario,
+    required this.formulario,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,29 +22,36 @@ class EditarPage extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF732457), Color(0xFF8C336D)],
+                colors: [Color(0xFFEBEBEB), Color(0xFFFFFFFF)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
           ),
-          // Imagem de fundo com opacidade
+          // Primeira imagem de fundo
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.3,
+              child: Image.asset('assents/images/CDM.png', fit: BoxFit.cover),
+            ),
+          ),
+          // Segunda imagem de fundo
           Positioned.fill(
             child: Opacity(
               opacity: 1,
-              child: Image.asset('assents/images/CDM.png', fit: BoxFit.cover),
+              child: Image.asset('assents/images/Grade.png', fit: BoxFit.cover),
             ),
           ),
           // Conteúdo da tela
           Column(
             children: [
-              // AppBar com degradê e imagem centralizada
+              // AppBar com degradê e imagem
               PreferredSize(
                 preferredSize: Size.fromHeight(kToolbarHeight),
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Color(0xFFA3BF3B), Color(0xFF6FAC45)],
+                      colors: [Color(0xFFa64182), Color(0xFF883069)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -59,9 +61,9 @@ class EditarPage extends StatelessWidget {
                     elevation: 0,
                     centerTitle: true,
                     title: SizedBox(
-                      height: 98,
+                      height: 60,
                       child: Image.asset(
-                        'assents/images/FiebCDM2.png',
+                        'assents/images/cdmgarfo.png',
                         fit: BoxFit.contain,
                       ),
                     ),
@@ -91,10 +93,7 @@ class EditarPage extends StatelessWidget {
                               ),
                             ),
                             Spacer(),
-                            Text(
-                              '15/05/25',
-                              style: TextStyle(color: Colors.grey[700]),
-                            ),
+                            // Removido o texto da data aqui
                           ],
                         ),
                         SizedBox(height: 16),
@@ -123,7 +122,11 @@ class EditarPage extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => FormularioPage(usuario: usuario),
+                                    builder:
+                                        (context) => FormularioPage(
+                                          usuario: usuario,
+                                          formularioPreenchido: formulario,
+                                        ),
                                   ),
                                 );
                               },

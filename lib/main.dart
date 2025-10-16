@@ -98,7 +98,7 @@ class _EntradaPageState extends State<EntradaPage>
             ),
           ),
 
-          // Segunda imagem de fundo com opacidade
+          // Segunda imagem de fundo com opacidades
           Positioned.fill(
             child: Opacity(
               opacity: 0.1, // ajuste conforme desejado

@@ -53,7 +53,7 @@ class _LoginScreenState extends State<InicialPage> {
 
   Future<Usuario?> _fazerLogin(String rm, String senha) async {
     final url = Uri.parse(
-      'http://localhost:8080/usuario/login-mobile',
+      'http://10.0.2.2:8080/usuario/login-mobile',
     ); // ajuste IP se necessário
     final response = await http.post(
       url,

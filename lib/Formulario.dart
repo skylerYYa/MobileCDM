@@ -47,7 +47,7 @@ class _FormularioCompletoPageState extends State<FormularioPage> {
   }
 
   Future<void> _enviarFormulario() async {
-    final url = Uri.parse('http://localhost:8080/formulario/save');
+    final url = Uri.parse('http://10.0.2.2:8080/formulario/save');
 
     final formulario = FormularioModel(
       usuarioId: widget.usuario.id,
